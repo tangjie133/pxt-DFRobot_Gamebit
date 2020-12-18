@@ -15,7 +15,6 @@ enum Dimension {
     //% block=z
     Z = 2,
 };
-
 enum AcceleratorRange {
     /**
      * The accelerator measures forces up to 1 gravity
@@ -81,9 +80,9 @@ enum state {
 };
 
 enum DigitalPin {
-    CS = DAL.CFG_PIN_D2
+    CS = DAL.CFG_PIN_D2,
+   
 }
-
 interface KV {
     key: state;
     action: Action;

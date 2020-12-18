@@ -5,6 +5,4 @@ declare namespace pins {
      */
     //% fixedInstance shim=pxt::lookupPinCfg(CFG_PIN_D2)
     const CS: DigitalInOutPin;
-
-   
 }

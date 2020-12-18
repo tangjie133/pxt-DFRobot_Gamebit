@@ -2,11 +2,10 @@
     "name": "DFRobot_Gamebit",
     "description": "",
     "dependencies": {
-        "device": "*"
+        "device": "*",
+        "edge-connector": "*"
     },
     "files": [
-        "main.blocks",
-        "main.ts",
         "README.md",
         "assets.json",
         "gamebit.ts",
