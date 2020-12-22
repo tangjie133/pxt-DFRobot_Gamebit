@@ -93,6 +93,7 @@ let stast1 = 1;
 namespace gamebit{
     let kbCallback: KV[] = []
     const i2cAddr = 0X68;
+    let radioStast:number=0;
     /*允许用户配置电源模式和时钟源。还提供了复位整个设备和禁用温度传感器的位(通过相应的位7 6 5 开启自检)*/
     let MPU6050_RA_PWR_MGMT_1    =  0x6B
     /*陀螺仪的配置,主要是配置陀螺仪的量程与自检*/
@@ -310,16 +311,16 @@ namespace gamebit{
     //% blocdID=Radioset  block="radio set group %data"
     //% weight=93
     export function setGroup(data:number){
-        pins.CS.digitalWrite(true);
+        pins.CS.digitalWrite(false);
         pins.spiFrequency(10000);
         let buf1:Buffer = pins.createBuffer(5);
         buf1[0]=0x55;
-        buf1[1]=0x31;
+        buf1[1]=0x00;
         buf1[2]=0x05;
         buf1[3]=0x10; 
         buf1[4]=0xAA;
         pins.CS.digitalWrite(true);
-        pins.spiTransfer(buf1, buf1);
+        pins.spiTransfer(buf1, null);
         pins.CS.digitalWrite(true);
         
         let buf2:Buffer = pins.createBuffer(5);
@@ -329,12 +330,13 @@ namespace gamebit{
         buf2[3]=0x10;
         buf2[4]=0xAA;
         pins.CS.digitalWrite(false);
-        pins.spiTransfer(buf2, buf1);
+        pins.spiTransfer(buf2, null);
         pins.CS.digitalWrite(true);
         pause(2000);
         let buf = pins.createBuffer(1);
         buf[0]=data;
         SPIWrite(buf,0x31,0x15,1);
+        radioStast=1;
     }
     /**
      * 发送数字
@@ -472,7 +474,6 @@ namespace gamebit{
             case 7: _x = attitude(Attitude.FreeFall)  == true ? 7:-1;break;
             default:_x = attitude(Attitude.FreeFall)   == true ? 10:-1;break;
         }
-        loop()
         i+=1;
         if(i==8)i=0;
         return _x;
@@ -549,6 +550,12 @@ namespace gamebit{
         pause(50);
     })
     
+    forever(() => {
+       if(radioStast == 1){
+           loop();
+       }
+        pause(50);
+    })
     function gyroscope(direction:Dimension):number{
         let buf, state,data
         state = 0xFF & i2cReadByet(0x43);
